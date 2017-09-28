@@ -1,0 +1,5 @@
+1.Use Powershell to collect Windows server compliance information
+2.Use WinRM to collect data
+3.Use Powershell SSH module to connect Linux Server for compliance information
+4.Run SSH and bash script on Linux Servers
+ 

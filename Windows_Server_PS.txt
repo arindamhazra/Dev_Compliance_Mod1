@@ -1,0 +1,31 @@
+$ComputerNames = Get-ADComputer -filter * -Properties dnsHostName |select -Expand dnsHostName
+
+$Code = {
+    param($Credentials,$ComputerName)
+    $session = New-PSSession -ComputerName $ComputerName -Credential $Credentials
+    Invoke-Command -Session $session -ScriptBlock {w32tm /resync /nowait /rediscover}
+}
+
+$creds = Get-Credential domain\user
+
+$rsPool = [runspacefactory]::CreateRunspacePool(1,8)
+$rsPool.Open()
+
+foreach($ComputerName in $ComputerNames)
+{
+    $PSinstance = [powershell]::Create().AddScript($Code).AddArgument($creds).AddArgument($ComputerName)
+    $PSinstance.RunspacePool = $rsPool
+    $PSinstance.BeginInvoke()
+}
+
+#Add an collector object that will store the data
+$Object = New-Object 'System.Management.Automation.PSDataCollection[psobject]'
+
+#Create a variable to check the status
+$Handle = $PSinstance.BeginInvoke($Object,$Object)
+
+#So if you want to check the status simply type:
+$Handle
+
+#If you want to see the data collected, type:
+$Object
