@@ -1,4 +1,4 @@
-Find Module PoSH-SSH | Install-Module
+Find-Module PoSH-SSH | Install-Module
 Get-Command -Module Posh-SSH
 New-SSHSession -ComputerName "somecomputer.domain.com" -Credential (Get-Credential)
 Get-SSHSession
